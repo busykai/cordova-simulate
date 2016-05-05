@@ -8,32 +8,34 @@ var Q = require('q'),
     log = require('./server/log'),
     simServer = require('./server/server'),
     simSocket = require('./server/socket'),
-    plugins = require('./server/plugins'),
     dirs = require('./server/dirs');
 
 var server = cordovaServe();
 
-var launchServer = function(opts) {
+var launchServer = function (opts) {
     opts = opts || {};
-    
+
     var platform = opts.platform || 'browser';
     var appUrl, simHostUrl, simHostOpts;
-    
+    var liveReloadEnabled = !opts.nolivereload;
+
     if (opts.simhostui && fs.existsSync(opts.simhostui)) {
         simHostOpts = { simHostRoot: opts.simhostui };
     } else {
         /* use the default simulation UI */
         simHostOpts = { simHostRoot: path.join(__dirname, 'sim-host', 'ui') };
     }
-    
+
     var middlewarePath = path.join(simHostOpts.simHostRoot, 'server', 'server');
     if (fs.existsSync(middlewarePath + '.js')) {
-        require(middlewarePath).attach(server.app, dirs);    
+        require(middlewarePath).attach(server.app, dirs);
     }
-    
+
     config.platform = platform;
     config.simHostOptions = simHostOpts;
     config.telemetry = opts.telemetry;
+    config.liveReloadEnabled = liveReloadEnabled;
+    config.prepareOnCssChange = !!opts.preparecss;
 
     simServer.attach(server.app);
 
@@ -51,30 +53,29 @@ var launchServer = function(opts) {
         appUrl = urlRoot + parseStartPage(projectRoot);
         simHostUrl = urlRoot + 'simulator/index.html';
         log.log('Server started:\n- App running at: ' + appUrl + '\n- Sim host running at: ' + simHostUrl);
-        return {appUrl: appUrl, simHostUrl: simHostUrl};
+        return { appUrl: appUrl, simHostUrl: simHostUrl };
     });
 };
 
-var closeServer = function() {
+var closeServer = function () {
     return server.server && server.server.close();
 };
 
-var launchBrowser = function(target, url) {
+var launchBrowser = function (target, url) {
     return cordovaServe.launchBrowser({ target: target, url: url });
 };
 
-var simulate = function(opts) {
-    
+var simulate = function (opts) {
     var target = opts.target || 'chrome';
     var simHostUrl;
 
     return launchServer(opts)
-        .then(function(urls) {
+        .then(function (urls) {
             simHostUrl = urls.simHostUrl;
             return launchBrowser(target, urls.appUrl);
-        }).then(function() {
+        }).then(function () {
             return launchBrowser(target, simHostUrl);
-        }).catch(function(error) {
+        }).catch(function (error) {
             // Ensure server is closed, then rethrow so it can be handled by downstream consumers.
             closeServer();
             if (error instanceof Error) {
@@ -85,9 +86,8 @@ var simulate = function(opts) {
         });
 };
 
-var parseStartPage = function(projectRoot) {
+var parseStartPage = function (projectRoot) {
     // Start Page is defined as <content src="some_uri" /> in config.xml
-
     var configFile = path.join(projectRoot, 'config.xml');
     if (!fs.existsSync(configFile)) {
         throw new Error('Cannot find project config file: ' + configFile);
@@ -110,4 +110,3 @@ module.exports.launchServer = launchServer;
 module.exports.closeServer = closeServer;
 module.exports.dirs = dirs;
 module.exports.app = server.app;
-module.exports.log = log;
