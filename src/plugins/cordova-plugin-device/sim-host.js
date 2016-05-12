@@ -305,7 +305,7 @@ function initialize() {
     deviceList.onchange = handleSelectDevice;
     deviceList.value = 'WVGA';
     handleSelectDevice();
-    registerTelemetryEvenst();
+    registerTelemetryEvents();
 }
 
 function handleSelectDevice() {
@@ -315,14 +315,33 @@ function handleSelectDevice() {
     document.getElementById('device-platform').value = option.getAttribute('_platform');
     document.getElementById('device-uuid').value = option.getAttribute('_uuid');
     document.getElementById('device-version').value = option.getAttribute('_version');
-    telemetry.sendUITelemetry(Object.assign({}, baseProps, { control: 'device-list', value: option.value }));
 }
 
-function registerTelemetryEvenst() {
-    document.getElementById('device-model').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'device-model' }));
-    document.getElementById('device-platform').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'device-platform' }));
-    document.getElementById('device-uuid').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'device-uuid' }));
-    document.getElementById('device-version').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'device-version' }));
+function registerTelemetryEvents() {
+    // Register the simple events (onchange -> send the control ID).
+    var basicTelemetryEventControls = [
+        'device-model',
+        'device-platform',
+        'device-uuid',
+        'device-version'
+    ];
+
+    basicTelemetryEventControls.forEach(function (controlId) {
+        registerTelemetryForControl(controlId);
+    });
+
+    // Register the event for the tdevice combo box.
+    var deviceList = document.getElementById('device-list');
+
+    deviceList.onchange = function () {
+        var option = deviceList.options[deviceList.selectedIndex];
+
+        telemetry.sendUITelemetry(Object.assign({}, baseProps, { control: 'device-list', value: option.value }));
+    };
+}
+
+function registerTelemetryForControl(controlId) {
+    document.getElementById(controlId).addEventListener('change', telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: controlId })));
 }
 
 module.exports = {

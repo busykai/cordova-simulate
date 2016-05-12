@@ -100,15 +100,26 @@ module.exports = function (messages) {
     }
 
     function registerTelemetryEvents() {
-        document.getElementById('geo-latitude').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-latitude' }));
-        document.getElementById('geo-longitude').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-longitude' }));
-        document.getElementById('geo-altitude').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-altitude' }));
-        document.getElementById('geo-accuracy').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-accuracy' }));
-        document.getElementById('geo-altitude-accuracy').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-altitude-accuracy' }));
-        document.getElementById('geo-heading').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-heading' }));
-        document.getElementById('geo-speed').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-speed' }));
-        document.getElementById('geo-delay').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-delay' }));
+        // Register the simple events (onclick / onchange / etc -> send the control ID).
+        var basicTelemetryEvents = [
+            { control: 'geo-latitude' },
+            { control: 'geo-longitude' },
+            { control: 'geo-altitude' },
+            { control: 'geo-accuracy' },
+            { control: 'geo-altitude-accuracy' },
+            { control: 'geo-heading' },
+            { control: 'geo-speed' },
+            { control: 'geo-delay' },
+            { control: 'geo-gpxfile-button', event: 'click' },
+            { control: 'geo-map-zoom-decrease', event: 'click' },
+            { control: 'geo-map-zoom-increase', event: 'click' }
+        ];
 
+        basicTelemetryEvents.forEach(function (controlEvent) {
+            registerTelemetryForControl(controlEvent.control, controlEvent.event);
+        });
+
+        // Register the event for the timeout checkbox.
         // Clicking the checkbox's label fires the click event twice, so keep track of the previous state. Note that we can't use the change event because the component seems to swallow it.
         var previousTimeoutState = false;
         var geoTimeoutCheckbox = document.querySelector('#geo-timeout');
@@ -119,16 +130,22 @@ module.exports = function (messages) {
                 telemetry.sendUITelemetry(Object.assign({}, baseProps, { control: 'geo-timeout' }));
             }
         };
-        document.getElementById('geo-gpxfile-button').onclick = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-gpxfile-button' }));
+
+        // Register the event for the Go button.
         document.getElementById('geo-gpx-go').onclick = function () {
             var rateList = document.getElementById('geo-gpxmultiplier-select');
             var option = rateList.options[rateList.selectedIndex];
 
             telemetry.sendUITelemetry(Object.assign({}, baseProps, { control: 'geo-gpx-go', value: option.value }));
         }
+
+        // Register the event for zooming with the mouse wheel on the map.
         document.getElementById('geo-map-container').onwheel = mapEventTelemetryHandler;
-        document.getElementById('geo-map-zoom-decrease').onclick = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-map-zoom-decrease' }));
-        document.getElementById('geo-map-zoom-increase').onclick = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'geo-map-zoom-increase' }));
+    }
+
+    function registerTelemetryForControl(controlId, event) {
+        event = event || 'change';
+        document.getElementById(controlId).addEventListener(event, telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: controlId })));
     }
 
     return {

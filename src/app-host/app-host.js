@@ -79,7 +79,10 @@ socket.on('start-live-reload', function () {
     livereload.start(socket);
 });
 
-telemetry.init(socket);
+socket.on('init-telemetry', function (data) {
+    telemetry.init(socket);
+});
+
 socket.emit('register-app-host');
 
 function exec(success, fail, service, action, args) {

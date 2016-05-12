@@ -31,12 +31,12 @@ Object.defineProperties(module.exports, {
             setValue('platformRoot', value);
         }
     },
-    prepareOnCssChange: {
+    forcePrepare: {
         get: function () {
-            return getValue('prepareOnCssChange');
+            return getValue('forcePrepare');
         },
         set: function (value) {
-            setValue('prepareOnCssChange', value);
+            setValue('forcePrepare', value);
         }
     },
     projectRoot: {

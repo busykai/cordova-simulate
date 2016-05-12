@@ -7,9 +7,10 @@ var socket;
 module.exports.initialize = function (pluginHandlers, serviceToPluginMap) {
     socket = io();
     module.exports.socket = socket;
-    telemetry.init(socket);
 
-    socket.emit('register-simulation-host');
+    socket.on('init-telemetry', function (data) {
+        telemetry.init(socket);
+    });
     socket.on('exec', function (data) {
         if (!data) {
             throw 'Exec called on simulation host without exec info';
@@ -36,7 +37,7 @@ module.exports.initialize = function (pluginHandlers, serviceToPluginMap) {
         console.log('Exec ' + service + '.' + action + ' (index: ' + index + ')');
 
         var handler = pluginHandlers[service] && pluginHandlers[service][action];
-        var telemetryProps = { plugin: serviceToPluginMap[service], service: service, action: action };
+        var telemetryProps = { plugin: serviceToPluginMap && serviceToPluginMap[service], service: service, action: action };
         if (!handler) {
             telemetryProps.handled = 'none';
             handler = pluginHandlers['*']['*'];
@@ -48,11 +49,14 @@ module.exports.initialize = function (pluginHandlers, serviceToPluginMap) {
 
         telemetry.sendClientTelemetry('exec', telemetryProps);
     });
-
     socket.on('refresh', function () {
         document.location.reload(true);
     });
 };
+
+module.exports.notifyPluginsReady = function () {
+    socket.emit('register-simulation-host');
+}
 
 function getSuccess(index) {
     return function (result) {

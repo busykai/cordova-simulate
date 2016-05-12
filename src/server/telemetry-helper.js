@@ -25,7 +25,7 @@ function handleClientTelemetry(telemetryData) {
 }
 
 function sendTelemetry(event, props, piiProps) {
-    if (config.telemetry) {
+    if (config.telemetry && config.telemetry.sendTelemetry && typeof config.telemetry.sendTelemetry === 'function') {
         config.telemetry.sendTelemetry(event, props || {}, piiProps || {});
     }
 }

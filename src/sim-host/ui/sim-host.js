@@ -97,4 +97,6 @@ function initializePlugins() {
             console.error(e);
         }
     });
+
+    socket.notifyPluginsReady();
 }

@@ -10,14 +10,21 @@ var fs = require('fs'),
 
 var pluginSimulationFiles = require('./plugin-files');
 
-var plugins = {};
-var pluginsTelemetry = {
-    simulatedBuiltIn: [],
-    simulatedNonBuiltIn: [],
-    notSimulated: []
-};
-
+var plugins;
+var pluginsTelemetry;
 var _router;
+
+resetPluginsData();
+
+function resetPluginsData() {
+    plugins = {};
+    pluginsTelemetry = {
+        simulatedBuiltIn: [],
+        simulatedNonBuiltIn: [],
+        notSimulated: []
+    };
+}
+
 function initPlugins() {
     // Always defined plugins
     var pluginList = ['exec', 'events'];
@@ -36,10 +43,8 @@ function initPlugins() {
     }
 
     var projectRoot = config.projectRoot;
-    plugins = {};
-    pluginsTelemetry.simulatedBuiltIn = [];
-    pluginsTelemetry.simulatedNonBuiltIn = [];
-    pluginsTelemetry.notSimulated = [];
+    
+    resetPluginsData();
     pluginList.forEach(function (pluginId) {
         var pluginFilePath = findPluginPath(projectRoot, pluginId);
         if (pluginFilePath) {

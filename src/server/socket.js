@@ -46,6 +46,11 @@ function init(server) {
                 livereload.init(socket);
             }
 
+            // Set up telemetry if necessary.
+            if (config.telemetry) {
+                socket.emit('init-telemetry');
+            }
+
             handlePendingEmits(appHost);
         });
 
@@ -74,6 +79,11 @@ function init(server) {
             socket.on('telemetry', function (data) {
                 telemetry.handleClientTelemetry(data);
             });
+
+            // Set up telemetry if necessary.
+            if (config.telemetry) {
+                socket.emit('init-telemetry');
+            }
 
             handlePendingEmits(simHost);
         });

@@ -35,7 +35,7 @@ var launchServer = function (opts) {
     config.simHostOptions = simHostOpts;
     config.telemetry = opts.telemetry;
     config.liveReloadEnabled = liveReloadEnabled;
-    config.prepareOnCssChange = !!opts.preparecss;
+    config.forcePrepare = !!opts.forceprepare;
 
     simServer.attach(server.app);
 
@@ -110,3 +110,4 @@ module.exports.launchServer = launchServer;
 module.exports.closeServer = closeServer;
 module.exports.dirs = dirs;
 module.exports.app = server.app;
+module.exports.log = log;
