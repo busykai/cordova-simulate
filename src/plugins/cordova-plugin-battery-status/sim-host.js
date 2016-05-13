@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 
-var telemetry = require('../../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var baseProps = {
     plugin: 'cordova-plugin-battery-status',
@@ -47,7 +47,7 @@ module.exports = function (message) {
         document.getElementById('battery-level').onchange = telemetry.sendUITelemetry.bind(this, Object.assign({}, baseProps, { control: 'battery-level' }));
 
         // Clicking the checkbox's label fires the click event twice, so keep track of the previous state. Note that we can't use the change event because the component seems to swallow it.
-        var previousPluggedState = false;
+        var previousPluggedState = true;
         var pluggedCheckbox = document.getElementById('is-plugged');
 
         pluggedCheckbox.onclick = function () {

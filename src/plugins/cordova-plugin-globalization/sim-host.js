@@ -2,7 +2,7 @@
 
 // https://github.com/apache/cordova-plugin-globalization/
 
-var telemetry = require('../../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var baseProps = {
     plugin: 'cordova-plugin-globalization',

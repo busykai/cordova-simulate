@@ -36,9 +36,10 @@ function processArgs() {
 
         var parserOptions = {
             string: ['dir', 'simhostui', 'target'],
-            boolean: ['nolivereload', 'forceprepare'],
+            boolean: ['livereload', 'forceprepare'],
             default: {
                 dir: null,
+                livereload: true,
                 port: null,
                 simhostui: null,
                 target: null
@@ -53,7 +54,7 @@ function processArgs() {
 
         return {
             dir: parsed.dir,
-            nolivereload: parsed.nolivereload,
+            livereload: parsed.livereload,
             platform: parsed._.length === 1 ? parsed._[0] : null,
             port: parsed.port,
             forceprepare: parsed.forceprepare,
@@ -66,5 +67,5 @@ function processArgs() {
 }
 
 function getUsageString() {
-    return `Usage:${os.EOL}simulate [PLATFORM] [--dir DIR] [--nolivereload] [--port PORT] [--forceprepare] [--simhostui SIM_HOST_UI_MODULE_PATH] [--target TARGET]`;
+    return `Usage:${os.EOL}simulate [PLATFORM] [--dir DIR] [--livereload LIVERELOAD] [--port PORT] [--forceprepare] [--simhostui SIM_HOST_UI_MODULE_PATH] [--target TARGET]`;
 }

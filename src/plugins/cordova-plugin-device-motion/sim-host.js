@@ -4,7 +4,7 @@
 
 require('./3d');
 require('./draw');
-var telemetry = require('../../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var baseProps = {
     plugin: 'cordova-plugin-device-motion',

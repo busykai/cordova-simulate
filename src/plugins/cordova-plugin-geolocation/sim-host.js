@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Based in part on code from Apache Ripple (https://github.com/apache/incubator-ripple)
 
-var telemetry = require('../../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var baseProps = {
     plugin: 'cordova-plugin-geolocation',

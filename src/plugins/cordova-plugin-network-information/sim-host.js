@@ -2,7 +2,7 @@
 
 var network = require('./network');
 
-var telemetry = require('../../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var baseProps = {
     plugin: 'cordova-plugin-network-information',

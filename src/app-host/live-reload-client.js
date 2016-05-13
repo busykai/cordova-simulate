@@ -3,9 +3,11 @@
 
 var url = require('url');
 
-var canRefreshEventName = 'lr-can-refresh';
-var refreshFileEventName = 'lr-refresh-file';
-var fullReloadEventName = 'lr-full-reload';
+var liveReloadEvents = {
+    CAN_REFRESH: 'lr-can-refresh',
+    REFRESH_FILE: 'lr-refresh-file',
+    FULL_RELOAD: 'lr-full-reload'
+}
 
 var urlAttribName = 'url';
 var hrefAttribName = 'href';
@@ -91,14 +93,16 @@ module.exports.start = function (sock) {
 
         // querySelectorAll() does not return an array, so we can't use Array.prototype.filter().
         for (var i = 0; i < rawNodes.length; ++i) {
+            var currentNode = rawNodes[i];
+
             // Ignore <script> tags (we need to do a full reload for scripts).
-            if (rawNodes[i].tagName.toLowerCase() === "script") {
+            if (currentNode.tagName.toLowerCase() === 'script') {
                 continue;
             }
 
             // Verify if the node is referencing the modified file
-            var referenceAttribute = getReferenceAttributeForNode(rawNodes[i]);
-            var nodeReference = rawNodes[i].getAttribute(referenceAttribute);
+            var referenceAttribute = getReferenceAttributeForNode(currentNode);
+            var nodeReference = currentNode.getAttribute(referenceAttribute);
 
             // If the node's url / href / src doesn't reference the modified file on the server, ignore the node.
             if (!urlMatchesPath(url.parse(nodeReference).pathname, fileRelativePath)) {
@@ -107,7 +111,7 @@ module.exports.start = function (sock) {
 
             // We care about this node.
             filteredNodes.push({
-                domNode: rawNodes[i],
+                domNode: currentNode,
                 referenceAttribute: referenceAttribute
             });
         }
@@ -129,7 +133,7 @@ module.exports.start = function (sock) {
             canRefresh = true;
         }
 
-        socket.emit(canRefreshEventName, { fileRelativePath: fileRelativePath, canRefresh: canRefresh });
+        socket.emit(liveReloadEvents.CAN_REFRESH, { fileRelativePath: fileRelativePath, canRefresh: canRefresh });
     }
 
     /**
@@ -169,13 +173,13 @@ module.exports.start = function (sock) {
         delete pendingFilesToRefresh[fileRelativePath];
     }
 
-    socket.on(canRefreshEventName, function (data) {
+    socket.on(liveReloadEvents.CAN_REFRESH, function (data) {
         prepareRefresh(data.fileRelativePath);
     });
-    socket.on(refreshFileEventName, function (data) {
+    socket.on(liveReloadEvents.REFRESH_FILE, function (data) {
         refreshFile(data.fileRelativePath);
     });
-    socket.on(fullReloadEventName, function () {
+    socket.on(liveReloadEvents.FULL_RELOAD, function () {
         reloadPage();
     });
 };

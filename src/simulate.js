@@ -17,7 +17,6 @@ var launchServer = function (opts) {
 
     var platform = opts.platform || 'browser';
     var appUrl, simHostUrl, simHostOpts;
-    var liveReloadEnabled = !opts.nolivereload;
 
     if (opts.simhostui && fs.existsSync(opts.simhostui)) {
         simHostOpts = { simHostRoot: opts.simhostui };
@@ -34,7 +33,7 @@ var launchServer = function (opts) {
     config.platform = platform;
     config.simHostOptions = simHostOpts;
     config.telemetry = opts.telemetry;
-    config.liveReloadEnabled = liveReloadEnabled;
+    config.liveReload = !!opts.livereload;
     config.forcePrepare = !!opts.forceprepare;
 
     simServer.attach(server.app);

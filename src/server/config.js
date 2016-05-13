@@ -7,12 +7,12 @@ var config = {};
 var simulationFilePath;
 
 Object.defineProperties(module.exports, {
-    liveReloadEnabled: {
+    liveReload: {
         get: function () {
-            return getValue('liveReloadEnabled');
+            return getValue('liveReload');
         },
         set: function (value) {
-            setValue('liveReloadEnabled', value);
+            setValue('liveReload', value);
         }
     },
     platform: {

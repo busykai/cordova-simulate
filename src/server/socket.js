@@ -41,7 +41,7 @@ function init(server) {
             });
 
             // Set up live reload if necessary.
-            if (config.liveReloadEnabled) {
+            if (config.liveReload) {
                 log.log('Starting live reload.');
                 livereload.init(socket);
             }

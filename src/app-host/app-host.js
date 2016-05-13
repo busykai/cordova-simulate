@@ -2,7 +2,7 @@
 
 var livereload = require('./live-reload-client');
 var Messages = require('messages');
-var telemetry = require('../client-common/client-telemetry-helper');
+var telemetry = require('telemetry-helper');
 
 var cordova;
 var oldExec;

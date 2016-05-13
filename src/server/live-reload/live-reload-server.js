@@ -9,9 +9,11 @@ var Q = require('q');
 var telemetry = require('../telemetry-helper');
 var Watcher = require('./watcher').Watcher;
 
-var canRefreshEventName = 'lr-can-refresh';
-var refreshFileEventName = 'lr-refresh-file';
-var fullReloadEventName = 'lr-full-reload';
+var liveReloadEvents = {
+    CAN_REFRESH: 'lr-can-refresh',
+    REFRESH_FILE: 'lr-refresh-file',
+    FULL_RELOAD: 'lr-full-reload'
+}
 
 var socket;
 var watcher;
@@ -24,13 +26,13 @@ function onFileChanged(fileRelativePath, filePathFromProjectRoot) {
 
     function canRefreshHandler(data) {
         if (data.fileRelativePath === fileRelativePath) {
-            socket.removeListener(canRefreshEventName, canRefreshHandler);
+            socket.removeListener(liveReloadEvents.CAN_REFRESH, canRefreshHandler);
             canRefreshDeferred.resolve(data.canRefresh);
         }
     }
 
-    socket.on(canRefreshEventName, canRefreshHandler);
-    socket.emit(canRefreshEventName, { fileRelativePath: fileRelativePath });
+    socket.on(liveReloadEvents.CAN_REFRESH, canRefreshHandler);
+    socket.emit(liveReloadEvents.CAN_REFRESH, { fileRelativePath: fileRelativePath });
 
     var canRefreshFile;
 
@@ -60,10 +62,10 @@ function onFileChanged(fileRelativePath, filePathFromProjectRoot) {
 
             if (canRefreshFile) {
                 props.reloadType = 'refresh';
-                socket.emit(refreshFileEventName, { fileRelativePath: fileRelativePath });
+                socket.emit(liveReloadEvents.REFRESH_FILE, { fileRelativePath: fileRelativePath });
             } else {
                 props.reloadType = 'full-reload';
-                socket.emit(fullReloadEventName);
+                socket.emit(liveReloadEvents.FULL_RELOAD);
             }
 
             telemetry.sendTelemetry('live-reload', props);
