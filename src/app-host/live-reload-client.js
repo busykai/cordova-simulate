@@ -9,13 +9,13 @@ var liveReloadEvents = {
     FULL_RELOAD: 'lr-full-reload'
 }
 
-var urlAttribName = 'url';
-var hrefAttribName = 'href';
-var srcAttribName = 'src';
+var URL_ATTRIB_NAME = 'url';
+var HREF_ATTRIB_NAME = 'href';
+var SRC_ATTRIB_NAME = 'src';
 var referenceAttributes = [
-    urlAttribName,
-    hrefAttribName,
-    srcAttribName
+    URL_ATTRIB_NAME,
+    HREF_ATTRIB_NAME,
+    SRC_ATTRIB_NAME
 ];
 
 module.exports.start = function (sock) {
@@ -45,16 +45,16 @@ module.exports.start = function (sock) {
      * @returns {String} "url", "href" or "src", or null if none of these attributes is defined.
      */
     function getReferenceAttributeForNode(domNode) {
-        if (domNode.getAttribute(urlAttribName)) {
-            return urlAttribName;
+        if (domNode.getAttribute(URL_ATTRIB_NAME)) {
+            return URL_ATTRIB_NAME;
         }
 
-        if (domNode.getAttribute(hrefAttribName)) {
-            return hrefAttribName;
+        if (domNode.getAttribute(HREF_ATTRIB_NAME)) {
+            return HREF_ATTRIB_NAME;
         }
 
-        if (domNode.getAttribute(srcAttribName)) {
-            return srcAttribName;
+        if (domNode.getAttribute(SRC_ATTRIB_NAME)) {
+            return SRC_ATTRIB_NAME;
         }
 
         return null;
