@@ -50,7 +50,6 @@ function initialize() {
 
     registerCustomElement('cordova-item', function () {
         this.classList.add('cordova-group');
-        var item = this;
         this.addEventListener('click', function (e) {
             if (e.target === this) {
                 // If the click target is our self, the only thing that could have been clicked is the delete icon.
@@ -120,7 +119,7 @@ function initialize() {
     });
 
     registerCustomElement('cordova-label', {
-        textContent: {
+        value: {
             set: function (value) {
                 setValueSafely(this.shadowRoot.querySelector('label'), 'textContent', value);
             },
@@ -151,6 +150,45 @@ function initialize() {
         this.shadowRoot.querySelector('label').textContent = this.getAttribute('label');
         this.classList.add('cordova-panel-row');
         this.classList.add('cordova-group');
+    }, 'input');
+
+    registerCustomElement('cordova-number-entry', {
+        value: {
+            set: function (value) {
+                setValueSafely(this.shadowRoot.querySelector('input'), 'value', value);
+            },
+
+            get: function () {
+                return this.shadowRoot.querySelector('input').value;
+            }
+        },
+        disabled: {
+            set: function (value) {
+                setValueSafely(this.shadowRoot.querySelector('input'), 'disabled', value);
+            }
+        }
+    }, function () {
+        this.shadowRoot.querySelector('label').textContent = this.getAttribute('label');
+        this.classList.add('cordova-panel-row');
+        this.classList.add('cordova-group');
+
+        var input = this.shadowRoot.querySelector('input');
+
+        var maxValue = this.getAttribute('max'),
+            minValue = this.getAttribute('min'),
+            step = this.getAttribute('step');
+
+        if (maxValue !== null) {
+            input.setAttribute('max', maxValue);
+        }
+
+        if (minValue !== null) {
+            input.setAttribute('min', minValue);
+        }
+
+        if (step !== null) {
+            input.setAttribute('step', step);
+        }
     }, 'input');
 
     registerCustomElement('cordova-labeled-value', {
@@ -190,6 +228,11 @@ function initialize() {
         files: {
             get: function () {
                 return this.shadowRoot.querySelector('input').files;
+            }
+        },
+        accept: {
+            set: function (value) {
+                setValueSafely(this.shadowRoot.querySelector('input'), 'accept', value);
             }
         }
     }, 'input');

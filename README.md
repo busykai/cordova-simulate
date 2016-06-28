@@ -25,9 +25,10 @@ Where opts is an object with the following properties (all optional):
 * **dir** - the directory to launch from (where it should look for a Cordova project). Defaults to cwd.
 * **simhostui** - the directory containing the UI specific files of the simulation host. Defaults to the bundled simulation host files, found in `src/sim-host/ui`.
 * **livereload** - A boolean. Set to false to disable live reload. Defaults to true.
-* **forceprepare** - A boolean. Set to true to force a `cordova prepare` whenever a file changes during live reload. If this is false, the server attempts to simply copy the changed file to the platform rather than doing a `cordova prepare`. Ignored if live reload is disabled. Defaults to false.
+* **forceprepare** - A boolean. Set to true to force a `cordova prepare` whenever a file changes during live reload. If this is false, the server will simply copy the changed file to the platform rather than doing a `cordova prepare`. Ignored if live reload is disabled. Defaults to false.
 * **corsproxy** - Boolean indicating if XMLHttpRequest is proxied through the simulate server. This is useful for working around CORS issues at development time. Defaults to true.
 * **touchevents** - A boolean. Set to false to disable the simulaton of touch events in App-Host. Defaults to true.
+* **simulationpath** - the directory where temporary simulation files are hosted. Defaults to `projectRoot/simulate`.
 
 
 # What it does
@@ -59,6 +60,7 @@ This preview version currently includes built-in support for the following Cordo
 * [cordova-plugin-file](https://github.com/apache/cordova-plugin-file)
 * [cordova-plugin-geolocation](https://github.com/apache/cordova-plugin-geolocation)
 * [cordova-plugin-globalization](https://github.com/apache/cordova-plugin-globalization)
+* [cordova-plugin-inappbrowser](https://github.com/apache/cordova-plugin-inappbrowser)
 * [cordova-plugin-media](https://github.com/apache/cordova-plugin-media)
 * [cordova-plugin-network-information](https://github.com/apache/cordova-plugin-network-information)
 * [cordova-plugin-vibration](https://github.com/apache/cordova-plugin-vibration)
@@ -236,3 +238,6 @@ Note that:
 * A method call is always sent from `app-host` to `sim-host` or vice versa (that is, a call from `app-host` can only be
   handled by a method registered on `sim-host`, and vice versa).
 * Emitted messages, on the other hand, are sent both "locally" and across to the "other side".
+
+# Code of conduct
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
